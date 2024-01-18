@@ -33,6 +33,47 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var sidebar = document.getElementById('sidebar');
+  var mainContent = document.getElementsByTagName('main')[0];
+  var startX;
+  var currentX;
+  var isOpen = false;
+
+  function handleTouchStart(event) {
+    startX = event.touches[0].clientX;
+    currentX = startX;
+  }
+
+  function handleTouchMove(event) {
+    currentX = event.touches[0].clientX;
+    var translateX = Math.min(0, currentX - startX);
+    sidebar.style.transform = 'translateX(' + translateX + 'px)';
+    mainContent.style.transform = 'translateX(' + translateX + 'px)';
+  }
+
+  function handleTouchEnd() {
+    var sidebarWidth = sidebar.offsetWidth;
+    var threshold = sidebarWidth / 2;
+    var translateX = currentX - startX;
+
+    if (!isOpen && translateX < -threshold) {
+      sidebar.style.transform = 'translateX(-' + sidebarWidth + 'px)';
+      mainContent.style.transform = 'translateX(-' + sidebarWidth + 'px)';
+      isOpen = true;
+    } else if (isOpen && translateX > threshold) {
+      sidebar.style.transform = 'translateX(0)';
+      mainContent.style.transform = 'translateX(0)';
+      isOpen = false;
+    }
+  }
+
+  sidebar.addEventListener('touchstart', handleTouchStart);
+  sidebar.addEventListener('touchmove', handleTouchMove);
+  sidebar.addEventListener('touchend', handleTouchEnd);
+});
  function showhome(){
   document.getElementById("home").style.display="block";
   document.getElementById("about").style.display="none";
